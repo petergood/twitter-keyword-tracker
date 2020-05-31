@@ -1,6 +1,7 @@
 package pl.petergood.tkt
 
 import akka.actor.{ActorSystem, Props}
+import pl.petergood.tkt.twitter.api.{Tweet, TwitterMessageStream}
 import twitter.{TweetCollectorActor, TweetTokenizerActor}
 
 object TwitterKeywordTracker {

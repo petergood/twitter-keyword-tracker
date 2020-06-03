@@ -12,5 +12,6 @@ class TokenPersistenceActor extends Actor {
 
   override def receive: Receive = {
     case TwitterTokens(tokens, timestamp) => tokens.foreach(token => tokenPersister.persist(token, timestamp, TokenType.tweet))
+    case RSSToken(tokens, timestamp) => tokens.foreach(token => tokenPersister.persist(token, timestamp, TokenType.rss))
   }
 }

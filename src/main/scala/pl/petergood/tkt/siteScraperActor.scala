@@ -2,12 +2,10 @@ package pl.petergood.tkt
 import akka.actor.{Actor, ActorRef, Props}
 import akka.util.Timeout
 import pl.petergood.tkt.TwitterKeywordTracker.system
-import pl.petergood.tkt.twitter.{TweetCollectorActor, TweetTokenizerActor}
+import pl.petergood.tkt.TwitterKeywordTracker.system.dispatcher
 
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import system.dispatcher
 
 
 case object Process
@@ -15,6 +13,8 @@ case object Process
 
 class siteScraperActor (supervisor: ActorRef) extends Actor {
   //handles scheduling
+
+  val scraperActor = system.actorOf(Props(new scraperActor(self)));
 
   var toProcess = List.empty[String] //List of url-s to process
   implicit val timeout = Timeout(8 seconds)
@@ -31,9 +31,10 @@ class siteScraperActor (supervisor: ActorRef) extends Actor {
         case Nil =>
         case url :: list =>
           println(s"site scraping -> $url")
+          scraperActor ! Scrap(url)
           toProcess = list
       }
   }
-  tick.cancel()
+  //tick.cancel()
 }
 

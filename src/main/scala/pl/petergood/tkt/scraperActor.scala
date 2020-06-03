@@ -11,7 +11,6 @@ class scraperActor (supervisor: ActorRef) extends Actor{
   val browser = HtmlUnitBrowser.typed()
   override def receive: Receive = {
     case Scrap(url:String) =>
-      print(url)
       val doc = browser.get(url)
       val title = doc >> text("#firstHeading")
       println(title)

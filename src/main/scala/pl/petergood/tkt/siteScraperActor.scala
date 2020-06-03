@@ -20,17 +20,17 @@ class siteScraperActor (supervisor: ActorRef) extends Actor {
   implicit val timeout = Timeout(8 seconds)
 
   val tick =
-    context.system.scheduler.schedule(Duration.Zero, 1000.milliseconds, self, Process)
+    context.system.scheduler.scheduleWithFixedDelay(Duration.Zero, 1000.milliseconds, self, Process)
 
   override def receive: Receive = {
     case Scrap(url:String) =>
-      println(s"waiting -> $url")
+     // println(s"waiting -> $url")
       toProcess = url :: toProcess
     case Process =>
       toProcess match {
         case Nil =>
         case url :: list =>
-          println(s"site scraping -> $url")
+        //  println(s"site scraping -> $url")
           scraperActor ! Scrap(url)
           toProcess = list
       }

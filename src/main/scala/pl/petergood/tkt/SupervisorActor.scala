@@ -3,6 +3,11 @@ import akka.actor.{Actor, Props}
 import pl.petergood.tkt.TwitterKeywordTracker.system
 
 case class Scrap(url: String)
+case class PrintName(url: String)
+//case object Start
+case object Process
+case object Over
+
 
 class SupervisorActor extends Actor {
   //The actor supervising all the others
@@ -12,11 +17,11 @@ class SupervisorActor extends Actor {
 
   override def receive: Receive = {
     case DefaultStart =>
+      val scheduleActor = system.actorOf(Props(new scheduleActor(self)));
       for (website <- websites) {
-        val siteScraperActor = system.actorOf(Props(new siteScraperActor(self)));
-        siteScraperActor ! Scrap(prefix + website)
-
+        scheduleActor ! Scrap(prefix + website)
       }
+      //scheduleActor ! Start
 
   }
 }

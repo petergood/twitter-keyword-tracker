@@ -19,15 +19,14 @@ object TwitterKeywordTracker {
     val feedScraperActor = system.actorOf(Props[FeedScraperActor], "feed-scraper-actor")
 
     Class.forName("org.postgresql.Driver")
-    //TODO: move this into config var
-    ConnectionPool.singleton("jdbc:postgresql://172.17.0.2:5432/postgres", "postgres", "mysecretpassword")
+    ConnectionPool.singleton(sys.env("DB_URL"), sys.env("DB_USER"), sys.env("DB_PASSWORD"))
 
     val messageStream = TwitterMessageStream({
       case tweet => tokenizerActor ! TokenizeTweetMessage(tweet)
-    }, List("#GeorgeFloyd")) //TODO: move this into config var
+    }, sys.env("HASHTAGS").split(",").toList)
     messageStream.start()
 
-    val rssFeeds = List("http://rss.cnn.com/rss/edition_us.rss")
+    val rssFeeds = sys.env("RSS_FEEDS").split(",").toList
 
     system.scheduler.schedule(0 second, 1 minute) {
       for (feed <- rssFeeds) {

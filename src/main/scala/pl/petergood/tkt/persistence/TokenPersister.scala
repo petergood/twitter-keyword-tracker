@@ -27,6 +27,7 @@ object TokenPersister {
       ignoredTokens += line
     }
 
+    ignoredTokens += ""
     new PostgresqlTokenPersister(ignoredTokens.toList)
   }
 

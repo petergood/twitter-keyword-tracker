@@ -1,6 +1,7 @@
 package pl.petergood.tkt
 
 import akka.actor.{ActorSystem, Props}
+import pl.petergood.tkt.rest.{DefaultTokenService, TokenController}
 import pl.petergood.tkt.twitter.api.{Tweet, TwitterMessageStream}
 import scalikejdbc.{AutoSession, ConnectionPool}
 import twitter.{TokenizeTweetMessage, TokenizerActor}
@@ -18,5 +19,7 @@ object TwitterKeywordTracker {
       case tweet => tokenizerActor ! TokenizeTweetMessage(tweet)
     }, List("#GeorgeFloyd")) //TODO: move this into config var
     messageStream.start()
+
+    TokenController.setupRoutes
   }
 }
